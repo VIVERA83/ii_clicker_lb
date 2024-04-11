@@ -11,14 +11,14 @@ from fake_useragent import UserAgent
 
 def get_chrome_options() -> Options:
     options = webdriver.ChromeOptions()
-    # options.add_argument("--window-size=1920,1080")
-    # options.add_argument("--no-sandbox")
-    # options.add_argument("--disable-gpu")
-    # options.add_argument("--disable-dev-shm-usage")
-    # options.add_argument("--headless=new")
-    # options.add_argument("--start-maximized")
-    # options.add_argument("--ignore-certificate-errors")
-    # options.add_argument("--allow-running-insecure-content")
+    options.add_argument("--window-size=1920,1080")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--headless=new")
+    options.add_argument("--start-maximized")
+    options.add_argument("--ignore-certificate-errors")
+    options.add_argument("--allow-running-insecure-content")
     user_agent = UserAgent(browsers=["chrome"]).getRandom.get("useragent")
     options.add_argument(f"user-agent={user_agent}")
     return options
@@ -47,7 +47,7 @@ def load_from_file(filename: str) -> dict:
     return {}
 
 
-def save_to_file(data: dict[str, str], filename: str):
+def save_to_file(filename: str, data: dict[str, str]):
     try:
         with open(filename, "w") as f:
             return json.dump(data, f)

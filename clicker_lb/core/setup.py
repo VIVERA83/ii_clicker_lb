@@ -7,6 +7,10 @@ async def main():
     loger = setup_logging()
     password = ClickerSettings().base_pass
     for login in [
-        "122shmakovvi800"
+        "122serovayu287",
+        # "122ivanovdyu748"
     ]:
-        await Clicker(login, "122shmakovvi800", loger).run()
+        print(login, password)
+        await Clicker(login, login, loger).run()
+
+

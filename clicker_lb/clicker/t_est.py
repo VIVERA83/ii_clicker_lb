@@ -83,36 +83,5 @@ class ClickerTest(AUTHClicker):
             data = load_from_file(db_file)
             if await self.execute_test(data, separator):
                 attempt = 0
-            save_to_file(data, db_file)
+            save_to_file(db_file, data)
         self.logger.info(f"the test has been completed, {id_test=}")
-#
-#
-# class ClickerTestOOP(BaseClickerTest):
-#     FILE_OOP = "oop.txt"
-#
-#     @wait_random_time()
-#     async def run_test_oop(self):
-#         attempt = 10
-#         data = {}
-#         while attempt:
-#             attempt = -1
-#             await self.open_test(id_test=2310)
-#             data = load_from_file(self.FILE_OOP)
-#             if await self.execute_test(data, "\n"):
-#                 attempt = 0
-#         save_to_file(data, self.FILE_OOP)
-#
-#
-# class ClickerTestB(BaseClickerTest):
-#     FILE_B = "b.txt"
-#
-#     @wait_random_time()
-#     async def run_test_b(self):
-#         a = 10
-#         while a:
-#             a = -1
-#             await self.open_test(id_test=2393)
-#             data = load_from_file(self.FILE_B)
-#             if await self.execute_test(data, "Правильный ответ: "):
-#                 a = 0
-#             save_to_file(data, self.FILE_B)
