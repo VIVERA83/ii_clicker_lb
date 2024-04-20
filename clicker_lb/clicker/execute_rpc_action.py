@@ -3,7 +3,6 @@ from dataclasses import asdict, dataclass, field
 from typing import Literal
 
 from clicker.clicker import Clicker
-
 from core.logger import setup_logging
 
 

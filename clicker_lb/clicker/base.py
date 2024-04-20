@@ -1,10 +1,9 @@
 from logging import Logger, getLogger
 
+from clicker.utils import get_chrome_options, wait_random_time
+from core.settings import ClickerSettings
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-
-from clicker.utils import wait_random_time, get_chrome_options
-from core.settings import ClickerSettings
 
 BASE_URL = ClickerSettings().base_url
 
@@ -28,13 +27,8 @@ class BaseClicker:
     def create_url(prefix: str = "", **params) -> str:
         url = BASE_URL + prefix
         if params:
-            url += "?" + "&".join([
-                f"{key}={val}"
-                for key, val in params.items()
-            ])
+            url += "?" + "&".join([f"{key}={val}" for key, val in params.items()])
         return url
 
     def close(self):
         self.driver.quit()
-
-

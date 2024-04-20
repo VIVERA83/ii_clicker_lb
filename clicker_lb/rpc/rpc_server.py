@@ -3,14 +3,9 @@ import json
 import logging
 
 from aio_pika import Message, connect
-from aio_pika.abc import (
-    AbstractChannel,
-    AbstractConnection,
-    AbstractExchange,
-    AbstractIncomingMessage,
-    AbstractQueue,
-)
-
+from aio_pika.abc import (AbstractChannel, AbstractConnection,
+                          AbstractExchange, AbstractIncomingMessage,
+                          AbstractQueue)
 from core.settings import RabbitMQSettings
 
 
@@ -24,7 +19,7 @@ class RPCServer:
         self, action, logger: logging.Logger = logging.getLogger(__name__)
     ) -> None:
         self.settings = RabbitMQSettings()
-        self.queue_name = "rpc_queue"
+        self.queue_name = "labor_protect_rpc_queue"
         self.action = action
         self.logger = logger
         loop = asyncio.get_event_loop()
@@ -40,7 +35,9 @@ class RPCServer:
 
                     async with message.process(requeue=False):
                         try:
-                            assert message.reply_to is not None, f"Bad message {message}"
+                            assert (
+                                message.reply_to is not None
+                            ), f"Bad message {message}"
                             response = await self._execute_action(message.body)
                         except Exception as e:
                             self.logger.exception("Processing error")

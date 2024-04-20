@@ -4,9 +4,9 @@ import logging
 from json import JSONDecodeError
 from random import randint
 
+from fake_useragent import UserAgent
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from fake_useragent import UserAgent
 
 
 def get_chrome_options() -> Options:

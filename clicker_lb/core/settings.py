@@ -1,7 +1,7 @@
 import os
 from typing import Literal
 
-from pydantic import field_validator, SecretStr
+from pydantic import SecretStr, field_validator
 from pydantic_settings import BaseSettings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__name__)))
