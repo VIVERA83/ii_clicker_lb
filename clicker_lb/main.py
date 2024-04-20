@@ -1,6 +1,4 @@
-import asyncio
-
-from core.setup import main
+from core.setup import run_rpc
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    run_rpc()

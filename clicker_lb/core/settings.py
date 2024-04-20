@@ -1,7 +1,7 @@
 import os
 from typing import Literal
 
-from pydantic import BaseModel, field_validator
+from pydantic import field_validator, SecretStr
 from pydantic_settings import BaseSettings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__name__)))
@@ -69,3 +69,30 @@ class ClickerSettings(Base):
     @field_validator("db_b", "db_oop", mode="before")
     def str_to_date(cls, v: str) -> str:  # noqa:
         return os.path.join(BASE_DIR, "clicker_lb/static", v)
+
+
+class RabbitMQSettings(Base):
+    rabbit_user: str
+    rabbit_password: SecretStr
+    rabbit_host: str
+    rabbit_port: int
+
+    def dsn(self, show_secret: bool = False) -> str:
+        """Returns the connection URL as a string.
+
+        Args:
+            show_secret (bool, optional): Whether to show the secret. Defaults to False.
+
+        Returns:
+            str: The connection URL.
+        """
+        return "amqp://{user}:{password}@{host}:{port}/".format(
+            user=self.rabbit_user,
+            password=(
+                self.rabbit_password.get_secret_value()
+                if show_secret
+                else self.rabbit_password
+            ),
+            host=self.rabbit_host,
+            port=self.rabbit_port,
+        )

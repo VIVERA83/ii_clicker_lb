@@ -1,32 +1,15 @@
-from dataclasses import dataclass, field, asdict
-from typing import Literal
+import asyncio
 
-from icecream import ic
-
-from clicker.clicker import Clicker
+from clicker.execute_rpc_action import execute_rpc_action
 from core.logger import setup_logging
-from core.settings import ClickerSettings
+from rpc.rpc_server import RPCServer
 
 
-@dataclass
-class Result:
-    status: Literal["OK", "ERROR"] = "OK"
-    course: str = "Unknown course"
-    result: list = field(default_factory=list)
-    message: str = "Success"
-
-    def to_dict(self):
-        return asdict(self)
-
-
-async def main():
-    loger = setup_logging()
-    login = "122serovayu287"
-    password = ClickerSettings().base_pass
-    result = Result()
-    try:
-        result.result.append(await Clicker(login, login, loger).run())
-    except Exception as e:
-        result.status = "ERROR"
-        result.message = str(e)
-    return ic(result)
+def run_rpc():
+    """A function to run an RPC with the given RPCServer instance."""
+    loop = asyncio.get_event_loop()
+    rpc_server = RPCServer(
+        logger=setup_logging(),
+        action=execute_rpc_action,
+    )
+    loop.run_until_complete(rpc_server.start())
