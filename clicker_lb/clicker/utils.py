@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+from dataclasses import dataclass
 from json import JSONDecodeError
 from random import randint
 

@@ -74,14 +74,22 @@ class ClickerTest(AUTHClicker):
         return await self._submit_test()
 
     @wait_random_time()
-    async def run_test(self, id_test: int, db_file: str, separator: str):
+    async def run_test(self, id_test: int, db_file: str, separator: str) -> dict[int, dict]:
         self.logger.info(f"run test: {id_test=}")
+        data = load_from_file(db_file)
         attempt = 10
-        while attempt:
-            attempt = -1
+        is_success = False
+        while attempt :
+            attempt -= 1
             await self.open_test(id_test)
-            data = load_from_file(db_file)
             if await self.execute_test(data, separator):
-                attempt = 0
-            save_to_file(db_file, data)
-        self.logger.info(f"the test has been completed, {id_test=}")
+                is_success = True
+                break
+        save_to_file(db_file, data)
+        self.logger.info(f"The test has been completed, {id_test=}")
+        return {
+            id_test: {
+                "status": "The test was passed successfully" if is_success else "The test failed",
+                "message": f"Attempts completed: {10 - attempt}",
+            }
+        }

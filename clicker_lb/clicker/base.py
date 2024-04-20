@@ -36,3 +36,5 @@ class BaseClicker:
 
     def close(self):
         self.driver.quit()
+
+

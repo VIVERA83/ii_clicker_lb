@@ -16,17 +16,19 @@ class AUTHClicker(BaseClicker):
         self.password = password
 
     @wait_random_time()
-    async def log_in(self, new_password: str = "1234qwer"):
+    async def log_in(self, new_password: str) -> bool:
         self.driver.get(LOGIN_URL)
         await self._log_in()
+        if self.driver.current_url == LOGIN_URL:
+            return False
         if self.driver.current_url == CHANGE_PASS_URL:
             await self._change_password(new_password)
+        return True
 
     async def _log_in(self):
         await self.set_value_input('//*[@id="username"]', self.login)
         await self.set_value_input('//*[@id="password"]', self.password)
         await self.click('//*[@id="loginbtn"]')
-        self.logger.info("Log in: ok!")
 
     async def _change_password(self, new_password: str):
         await self.set_value_input('//*[@id="id_password"]', self.password)
