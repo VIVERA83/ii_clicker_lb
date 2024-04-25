@@ -18,6 +18,14 @@ docker build -t ii_clicker_lb .
 ```
 Запуск приложения в docker контейнере
 ```bash
-docker run --rm --name ii_clicker_lb  ii_clicker_lb
+docker run --rm --name ii_clicker_lb  vivera83/ii_labor_protect:1
 ```
 
+```bash
+docker build -t vivera83/ii_labor_protect:1 .
+```
+
+
+```bash
+docker push vivera83/ii_labor_protect:1
+```  
