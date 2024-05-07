@@ -107,6 +107,9 @@ class ClickerTest(AUTHClicker):
         self.logger.info(f"The test has been completed, {id_test=}")
         return {
             id_test: {
+                "username": self.login,
+                "password": self.password,
+                "id_test": id_test,
                 "status": (
                     "The test was passed successfully"
                     if is_success

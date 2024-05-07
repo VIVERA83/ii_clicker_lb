@@ -24,10 +24,10 @@ class BaseClicker:
         self.driver.find_element(by=by, value=name).click()
 
     @staticmethod
-    def create_url(prefix: str = "", **params) -> str:
+    def create_url(prefix: str = "", sep: str = "?", **params) -> str:
         url = BASE_URL + prefix
         if params:
-            url += "?" + "&".join([f"{key}={val}" for key, val in params.items()])
+            url += sep + "&".join([f"{key}={val}" for key, val in params.items()])
         return url
 
     def close(self):
