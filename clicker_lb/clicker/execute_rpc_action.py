@@ -8,6 +8,7 @@ from core.logger import setup_logging
 
 @dataclass
 class Result:
+    user: str = "Пользователь не найден"
     status: Literal["OK", "ERROR"] = "OK"
     course: str = ""
     result: list = field(default_factory=list)
@@ -17,7 +18,7 @@ class Result:
         return asdict(self)
 
 
-async def execute_rpc_action(login: str, password: str) -> str:
+async def execute_rpc_action(login: str, password: str, course_type: Literal[2311, 2393, 2310]) -> str:
     """Asynchronously runs a program for a specific course type.
 
     Parameters:
@@ -31,13 +32,14 @@ async def execute_rpc_action(login: str, password: str) -> str:
     clicker = Clicker(login, password, setup_logging())
     try:
         result = Result(course="Labor protect course")
-        result.result.append(await clicker.run())
+        result.result.append(await clicker.run([course_type]))
     except Exception as ex:
         raise Exception(ex.args[0])
     finally:
         clicker.close()
     return json.dumps(
         Result(
+            user=login,
             status="ERROR",
             course="course_type",
             result=[],

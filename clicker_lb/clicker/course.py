@@ -1,4 +1,6 @@
 from clicker.auth import AUTHClicker
+from clicker.exceptions import exception_handler, CourseANotScheduledException, CourseBNotScheduledException, \
+    CourseOPPNotScheduledException
 from clicker.utils import wait_random_time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -13,6 +15,7 @@ class BaseClickerCourse(AUTHClicker):
 
 class ClickerCourseA(BaseClickerCourse):
     @wait_random_time()
+    @exception_handler(CourseANotScheduledException)
     async def mark_course_a(self):
         sections = [2, 3, 4, 5, 6, 7, 8]
         for section in sections:
@@ -35,6 +38,7 @@ class ClickerCourseA(BaseClickerCourse):
 
 class ClickerCourseB(BaseClickerCourse):
     @wait_random_time()
+    @exception_handler(CourseBNotScheduledException)
     async def mark_course_b(self):
         sections = [2, 3]
         for section in sections:
@@ -58,6 +62,7 @@ class ClickerCourseB(BaseClickerCourse):
 class ClickerCourseOOP(BaseClickerCourse):
 
     @wait_random_time()
+    @exception_handler(CourseOPPNotScheduledException)
     async def mark_course_oop(self):
         url = self.create_url("course/view.php", id=162)
         self.driver.get(url)

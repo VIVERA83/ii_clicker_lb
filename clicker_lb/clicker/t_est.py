@@ -3,6 +3,7 @@ from random import randint
 from urllib.parse import urlparse
 
 from clicker.auth import AUTHClicker
+from clicker.exceptions import exception_handler, TestNotScheduledException
 from clicker.utils import load_from_file, save_to_file, wait_random_time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -19,7 +20,7 @@ class ClickerTest(AUTHClicker):
         await self.click(".singlebutton.quizstartbuttondiv", By.CSS_SELECTOR)
 
     def _get_elements_from_question_form(
-        self,
+            self,
     ) -> tuple[Question, list[WebElement], SubmitBtn]:
         submit_btn = self.driver.find_element(
             By.CSS_SELECTOR, ".mod_quiz-next-nav.btn.btn-primary"
@@ -68,6 +69,7 @@ class ClickerTest(AUTHClicker):
         return is_test_passed
 
     @wait_random_time()
+    @exception_handler(TestNotScheduledException)
     async def execute_test(self, data: dict[str, str], chars: str) -> bool:
         while urlparse(self.driver.current_url).path != "/mod/quiz/summary.php":
             quiz, radios_btn, submit_btn = self._get_elements_from_question_form()
@@ -91,7 +93,7 @@ class ClickerTest(AUTHClicker):
 
     @wait_random_time()
     async def run_test(
-        self, id_test: int, db_file: str, separator: str
+            self, id_test: int, db_file: str, separator: str
     ) -> dict[int, dict]:
         self.logger.info(f"run test: {id_test=}")
         data = load_from_file(db_file)
