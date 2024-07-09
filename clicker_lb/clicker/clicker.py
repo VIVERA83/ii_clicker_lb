@@ -18,6 +18,7 @@ class Clicker(ClickerCourseOOP, ClickerCourseA, ClickerCourseB, ClickerTest):
             await self.mark_course_b()
         if 2310 in course_type:
             await self.mark_course_oop()
+
         for test_id, db_file, separator in [
             [self.settings.test_id_a, self.settings.db_a, self.settings.separator_a],
             [self.settings.test_id_b, self.settings.db_b, self.settings.separator_b],
