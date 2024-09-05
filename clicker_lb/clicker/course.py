@@ -60,6 +60,7 @@ class ClickerCourseB(BaseClickerCourse):
 
 
 class ClickerCourseOOP(BaseClickerCourse):
+    """Оказание первой помощи пострадавшим."""
 
     @wait_random_time()
     @exception_handler(CourseOPPNotScheduledException)
@@ -70,7 +71,7 @@ class ClickerCourseOOP(BaseClickerCourse):
             By.XPATH, '//*[@id="module-2152"]/div/div/div[2]/div[2]/div/button'
         )
         await self._mark_completed(button)
-        self.logger.info("he course has been completed: oop")
+        self.logger.info("he course has been completed: Оказание первой помощи пострадавшим.")
 
 #
 # class ClickerCourseSIZ(BaseClickerCourse):

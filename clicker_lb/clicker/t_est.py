@@ -2,6 +2,8 @@ import asyncio
 from random import randint
 from urllib.parse import urlparse
 
+from icecream import ic
+
 from clicker.auth import AUTHClicker
 from clicker.exceptions import exception_handler, TestNotScheduledException
 from clicker.utils import load_from_file, save_to_file, wait_random_time
@@ -10,14 +12,19 @@ from selenium.webdriver.remote.webelement import WebElement
 
 Question = str
 SubmitBtn = WebElement
+ic.includeContext = True
 
 
 class ClickerTest(AUTHClicker):
     @wait_random_time()
-    async def open_test(self, id_test: int):
+    async def open_test(self, id_test: int) -> bool:
         url = self.create_url("mod/quiz/view.php", id=id_test)
         self.driver.get(url)
+
+        if url != self.driver.current_url:
+            return False
         await self.click(".singlebutton.quizstartbuttondiv", By.CSS_SELECTOR)
+        return True
 
     def _get_elements_from_question_form(
             self,
@@ -54,19 +61,30 @@ class ClickerTest(AUTHClicker):
             data.update({quiz: correct_answer})
 
     @wait_random_time()
+    async def _submit_test_success(self) -> bool:
+        ic(self.driver.current_url)
+        ul = self.driver.find_element(By.CLASS_NAME, "topics")
+        h3 = ul.find_elements(By.TAG_NAME, "h3")
+        return "ПОЗДРАВЛЯЕМ" in h3[-1].text
+
+    # TODO: не удаляй старая версия
+    @wait_random_time()
     async def _submit_test(self) -> bool:
-        submit = self.driver.find_element(By.CLASS_NAME, "othernav")
-        is_test_passed = "custom_attemp_success" in submit.text
-        [
-            check.click()
-            for check in submit.find_elements(By.CLASS_NAME, "form-check-input")
-        ]
-        submit_btn = submit.find_element(By.CLASS_NAME, "submitbtns").find_element(
-            By.TAG_NAME, "input"
-        )
-        await asyncio.sleep(1)
-        submit_btn.click()
-        return is_test_passed
+        if urlparse(self.driver.current_url).path == "/mod/quiz/review.php":
+            submit = self.driver.find_element(By.CLASS_NAME, "othernav")
+            is_test_passed = "custom_attemp_success" in submit.text
+            [
+                check.click()
+                for check in submit.find_elements(By.CLASS_NAME, "form-check-input")
+            ]
+            submit_btn = submit.find_element(By.CLASS_NAME, "submitbtns").find_element(
+                By.TAG_NAME, "input"
+            )
+            await asyncio.sleep(1)
+            submit_btn.click()
+            return is_test_passed
+        else:
+            await self._submit_test_success()
 
     @wait_random_time()
     @exception_handler(TestNotScheduledException)
@@ -99,9 +117,14 @@ class ClickerTest(AUTHClicker):
         data = load_from_file(db_file)
         attempt = 10
         is_success = False
+        message = ""
         while attempt:
             attempt -= 1
-            await self.open_test(id_test)
+            if not await self.open_test(id_test):
+                ic(is_success)
+                message = f"Тест не был запущен, возможно он не назначен либо уже выполнен {id_test}"
+                self.logger.warning(message)
+                break
             if await self.execute_test(data, separator):
                 is_success = True
                 break
@@ -113,10 +136,10 @@ class ClickerTest(AUTHClicker):
                 "password": self.password,
                 "id_test": id_test,
                 "status": (
-                    "The test was passed successfully"
+                    "Тест успешно пройден"
                     if is_success
-                    else "The test failed"
+                    else message
                 ),
-                "message": f"Attempts completed: {10 - attempt}",
+                "message": f"Попыток выполнения теста: {10 - attempt}",
             }
         }
