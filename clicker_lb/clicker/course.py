@@ -73,6 +73,29 @@ class ClickerCourseOOP(BaseClickerCourse):
         await self._mark_completed(button)
         self.logger.info("he course has been completed: Оказание первой помощи пострадавшим.")
 
+
+class ClickerCourseOB(BaseClickerCourse):
+    @wait_random_time()
+    @exception_handler(CourseBNotScheduledException)
+    async def mark_course_ob(self):
+        sections = [2, 3, 5]
+        for section in sections:
+            url = self.create_url("course/view.php", id=160, section=section)
+            self.driver.get(url)
+            await self._mark_completed_section()
+            self.logger.info(f"mark section {section} ")
+        self.logger.info("the course has been completed: ob")
+
+    @wait_random_time()
+    async def _mark_completed_section(self):
+        element = self.driver.find_element(By.CLASS_NAME, "content")
+        buttons = element.find_elements(By.TAG_NAME, "button")
+        await self.__mark_completed(buttons)
+
+    async def __mark_completed(self, buttons: list[WebElement]):
+        for button in buttons:
+            await self._mark_completed(button)
+
 #
 # class ClickerCourseSIZ(BaseClickerCourse):
 #

@@ -74,9 +74,13 @@ class ClickerSettings(Base):
     test_id_siz: int
     separator_siz: str
 
+    db_ob: str
+    test_id_ob: int
+    separator_ob: str
+
     base_pass: str
 
-    @field_validator("db_a", "db_b", "db_oop", "db_siz", mode="before")
+    @field_validator("db_a", "db_b", "db_oop", "db_siz", "db_ob", mode="before")
     def str_to_date(cls, v: str) -> str:  # noqa:
         return os.path.join(BASE_DIR, "clicker_lb/static", v)
 
